@@ -1,0 +1,1 @@
+sqoop import --connect jdbc:oracle:thin:@bootcamp-march2017.cghfmcr8k3ia.us-west-2.rds.amazonaws.com:15210:gravity --username admin --password bootcamp --table ADMIN.ASTROPHYSICISTS --hive-table astrophysicists --create-hive-table --hive-import -m 1 --as-parquetfile --compress --compression-codec org.apache.hadoop.io.compress.SnappyCodec --hive-overwrite
