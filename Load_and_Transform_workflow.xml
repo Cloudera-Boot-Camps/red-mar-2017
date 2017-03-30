@@ -1,0 +1,58 @@
+<workflow-app name="Load and Transform" xmlns="uri:oozie:workflow:0.5">
+    <start to="fork-441a"/>
+    <kill name="Kill">
+        <message>Action failed, error message[${wf:errorMessage(wf:lastErrorNode())}]</message>
+    </kill>
+    <action name="subworkflow-acc8">
+        <sub-workflow>
+            <app-path>${nameNode}/user/hue/oozie/workspaces/hue-oozie-1490819555.29</app-path>
+              <propagate-configuration/>
+            <configuration>
+                <property>
+                    <name>hue-id-w</name>
+                    <value>38</value>
+                </property>
+            </configuration>
+        </sub-workflow>
+        <ok to="join-01c9"/>
+        <error to="Kill"/>
+    </action>
+    <action name="subworkflow-fc50">
+        <sub-workflow>
+            <app-path>${nameNode}/user/hue/oozie/workspaces/hue-oozie-1490880321.93</app-path>
+              <propagate-configuration/>
+            <configuration>
+                <property>
+                    <name>TABLE</name>
+                    <value>ADMIN.MEASUREMENTS</value>
+                </property>
+                <property>
+                    <name>ROWS</name>
+                    <value>1000000</value>
+                </property>
+                <property>
+                    <name>hue-id-w</name>
+                    <value>60</value>
+                </property>
+            </configuration>
+        </sub-workflow>
+        <ok to="join-01c9"/>
+        <error to="Kill"/>
+    </action>
+    <fork name="fork-441a">
+        <path start="subworkflow-acc8" />
+        <path start="subworkflow-fc50" />
+    </fork>
+    <join name="join-01c9" to="hive2-a90f"/>
+    <action name="hive2-a90f" cred="hive2">
+        <hive2 xmlns="uri:oozie:hive2-action:0.1">
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <jdbc-url>jdbc:hive2://ip-172-31-15-224.us-west-2.compute.internal:10000/default</jdbc-url>
+            <script>/user/ec2-user/scripts/transform.sql</script>
+        </hive2>
+        <ok to="End"/>
+        <error to="Kill"/>
+    </action>
+    <end name="End"/>
+</workflow-app>

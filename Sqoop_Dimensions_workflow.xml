@@ -1,0 +1,89 @@
+<workflow-app name="Sqoop Dimensions" xmlns="uri:oozie:workflow:0.5">
+    <start to="fork-21a9"/>
+    <kill name="Kill">
+        <message>Action failed, error message[${wf:errorMessage(wf:lastErrorNode())}]</message>
+    </kill>
+    <action name="subworkflow-3688">
+        <sub-workflow>
+            <app-path>${nameNode}/user/hue/oozie/workspaces/hue-oozie-1490812531.55</app-path>
+              <propagate-configuration/>
+            <configuration>
+                <property>
+                    <name>TABLE</name>
+                    <value>ADMIN.DETECTORS</value>
+                </property>
+                <property>
+                    <name>MAPPERS</name>
+                    <value>1</value>
+                </property>
+                <property>
+                    <name>hue-id-w</name>
+                    <value>6</value>
+                </property>
+            </configuration>
+        </sub-workflow>
+        <ok to="join-d5d3"/>
+        <error to="Kill"/>
+    </action>
+    <action name="subworkflow-cbe7">
+        <sub-workflow>
+            <app-path>${nameNode}/user/hue/oozie/workspaces/hue-oozie-1490812531.55</app-path>
+              <propagate-configuration/>
+            <configuration>
+                <property>
+                    <name>TABLE</name>
+                    <value>ADMIN.GALAXIES</value>
+                </property>
+                <property>
+                    <name>MAPPERS</name>
+                    <value>1</value>
+                </property>
+                <property>
+                    <name>hue-id-w</name>
+                    <value>6</value>
+                </property>
+            </configuration>
+        </sub-workflow>
+        <ok to="join-d5d3"/>
+        <error to="Kill"/>
+    </action>
+    <fork name="fork-21a9">
+        <path start="subworkflow-3688" />
+        <path start="subworkflow-cbe7" />
+        <path start="subworkflow-3693" />
+    </fork>
+    <join name="join-d5d3" to="hive2-3618"/>
+    <action name="subworkflow-3693">
+        <sub-workflow>
+            <app-path>${nameNode}/user/hue/oozie/workspaces/hue-oozie-1490812531.55</app-path>
+              <propagate-configuration/>
+            <configuration>
+                <property>
+                    <name>TABLE</name>
+                    <value>ADMIN.ASTROPHYSICISTS</value>
+                </property>
+                <property>
+                    <name>MAPPERS</name>
+                    <value>1</value>
+                </property>
+                <property>
+                    <name>hue-id-w</name>
+                    <value>6</value>
+                </property>
+            </configuration>
+        </sub-workflow>
+        <ok to="join-d5d3"/>
+        <error to="Kill"/>
+    </action>
+    <action name="hive2-3618" cred="hive2">
+        <hive2 xmlns="uri:oozie:hive2-action:0.1">
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <jdbc-url>jdbc:hive2://ip-172-31-15-224.us-west-2.compute.internal:10000/default</jdbc-url>
+            <script>/user/ec2-user/scripts/create_dimensions.sql</script>
+        </hive2>
+        <ok to="End"/>
+        <error to="Kill"/>
+    </action>
+    <end name="End"/>
+</workflow-app>
