@@ -1,0 +1,3 @@
+Hive tables created in parquet format and did partition on Measurement table
+Created views for joining the tables and transforming the data
+Finally materialised the view to have output in hive table
