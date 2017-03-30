@@ -11,6 +11,9 @@ Steps followed:
     b. Tested successfully simple producer and consumer command 
     c. Started Flume agent
     d. Tested successfully for the data load into Kafka.
+6. Flume, Kafka and Spark Integration
+Issues: Stream job was not able to pick the data. We then realized that, Kafka consumer is stopping after consuming few set of records.
+Changed the flume parameters to increase memory to 50MB and batch size as 200, which made sure that Kafka job does not stop..Now Kafka consumer reading messages continuously.
 
 
 
