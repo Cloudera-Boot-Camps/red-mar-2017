@@ -1,0 +1,16 @@
+<workflow-app name="Sqoop Table" xmlns="uri:oozie:workflow:0.5">
+    <start to="sqoop-f1cf"/>
+    <kill name="Kill">
+        <message>Action failed, error message[${wf:errorMessage(wf:lastErrorNode())}]</message>
+    </kill>
+    <action name="sqoop-f1cf">
+        <sqoop xmlns="uri:oozie:sqoop-action:0.2">
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <command>import --connect jdbc:oracle:thin:@bootcamp-march2017.cghfmcr8k3ia.us-west-2.rds.amazonaws.com:15210:gravity --username admin --password bootcamp --table ${TABLE}  -m  ${MAPPERS} --delete-target-dir --verbose  --target-dir /user/ec2-user/gravity/${TABLE} --fields-terminated-by &quot;|&quot;</command>
+        </sqoop>
+        <ok to="End"/>
+        <error to="Kill"/>
+    </action>
+    <end name="End"/>
+</workflow-app>
