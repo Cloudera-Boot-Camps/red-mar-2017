@@ -46,4 +46,6 @@ java -cp bootcamp-0.0.1-SNAPSHOT.jar com.cloudera.fce.bootcamp.MeasurementGenera
 
 All Configurations used for Flume to HDFS/HBASE/KAFKA are mentioned under Flume.
 
-Issue Faced: Flume memory channel buffer size was so tight that the data was not able to fit and spark-streaming program was not able to get current streaming data from Kafka so increased the buffer size from 1 MB to 50 MB and was able to resolve the issue. Details are mentioned under Flume directory.
+Issue Faced: 
+1.If data have '(single quote) then in sqoop then --terminated-by '|' will not work we should have escape char "|"   , in sqoop jdbc connection we tried using jdbc connector/databasename but it didn't work , then mentioned jdbc-connector:databasename.
+2.Flume memory channel buffer size was so tight that the data was not able to fit and spark-streaming program was not able to get current streaming data from Kafka so increased the buffer size from 1 MB to 50 MB and batch size from 20 to 200 and was able to resolve the issue. For writing to HDFS increased channel capacity to 100.  Details are mentioned under Flume directory.
